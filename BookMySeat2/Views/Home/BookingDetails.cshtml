@@ -1,0 +1,13 @@
+﻿@model BookMySeat.Models.Booking
+@{
+    ViewBag.Title = "Booking";
+}
+<div class="booking-details">
+    <h3>Congrats!! Your Booking is Successful.</h3>
+    <h3>Booking Details are:</h3>
+    <h4>Movie :@Session["MovieName"]</h4>
+    <div>Show Time:@Session["ShowTime"]</div>
+    <div>Booking ID:@Model.BookingID</div>
+    <div>Booked Seats:@Model.Seats</div>
+    <div>Total:@Model.Price</div>
+</div>

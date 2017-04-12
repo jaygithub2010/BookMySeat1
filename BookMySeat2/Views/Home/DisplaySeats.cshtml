@@ -1,0 +1,127 @@
+﻿@model IEnumerable<BookMySeat.Models.SeatViewModel>
+@{
+    ViewBag.Title = "DisplaySeats";
+}
+<div>
+    <h1>Movie:@Session["MovieName"]</h1>
+    <h2>Show:@Session["ShowTime"]</h2>
+</div>
+<br />
+<div><input type="number" min="1" max="10" value="1" id="numberOfSeats" /></div>
+<br />
+<br />
+<div class="seat-layout">
+    @{
+        List<BookMySeat.Models.SeatViewModel> premiumSeats = Model.Where(s => s.SeatType == "Premium").ToList<BookMySeat.Models.SeatViewModel>();
+        List<BookMySeat.Models.SeatViewModel> standardSeats = Model.Where(s => s.SeatType == "Standard").ToList<BookMySeat.Models.SeatViewModel>();
+        BookMySeat.Models.Theatre theatre = (BookMySeat.Models.Theatre)ViewBag.Theatre;
+        <div class="premium">
+            @for (int row = 0; row < theatre.PremiumRows; row++)
+            {
+                <div>
+                    <ul>
+                        @for (var column = 0; column < theatre.PremiumSeats / theatre.PremiumRows; column++)
+                        {
+                            string className = "";
+                            if (!@premiumSeats[row * 10 + column].IsBooked)
+                            {
+                                className = "available";
+                            }
+                            <li class="seat @className">@premiumSeats[row * 10 + column].SeatNumber</li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+        <br />
+        <div class="standard">
+            @for (int row = 0; row < theatre.StandardRows; row++)
+            {
+                <div>
+                    <ul>
+                        @for (var column = 0; column < theatre.StandardSeats / theatre.StandardRows; column++)
+                        {
+                            string className = "";
+                            if (!@standardSeats[row * 10 + column].IsBooked)
+                            {
+                                className = "available";
+                            }
+                            <li class="seat @className">@standardSeats[row * 10 + column].SeatNumber</li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+        <div class="screen">SCREEN</div>
+    }
+</div>
+<div class="hide" id="bookingDetails">
+    @using (Html.BeginForm("Booking","Home"))
+    {
+        <div><input type="hidden" name="showID" value="@ViewBag.ShowID" readonly="readonly" /></div>
+        <div>Total:<input type="text" name="price" readonly="readonly" /></div>
+        <div>selected Seats:<input type="text" name="seats" readonly="readonly" /></div>
+        <div>Please Enter your Email:</div>
+        <div><input type="text" name="bookedBy" required/></div>
+        <br />
+        <div><input type="submit" value="Confirm Booking" /></div>
+    }
+</div>
+
+<script>
+    $(document).ready(function()
+    {
+        
+        $('.available').on('click', function () {
+            var selectedSeat = $('.selected-seat');
+            var seatsInput = $('#numberOfSeats')[0].value;
+            if(selectedSeat.length==seatsInput &&seatsInput!=0)
+            {
+                if($(this).hasClass('selected-seat'))
+                {
+                    $(this).removeClass('selected-seat'); 
+                    $('#bookingDetails').addClass('hide');
+                }
+                else
+                {
+                    selectedSeat.removeClass('selected-seat');
+                    $(this).addClass('selected-seat')
+                    $('#bookingDetails').addClass('hide');
+                    if(seatsInput==1)
+                    {
+                        $('#bookingDetails').removeClass('hide');
+                        var price=$('.premium .selected-seat').length*@theatre.PremiumSeatPrice
+                            +$('.standard .selected-seat').length *@theatre.StandardSeatPrice;
+                        var selectedSeats = $('.selected-seat').first().text();
+                        $('input[name="price"]')[0].value=price;
+                        $('input[name="seats"]')[0].value=selectedSeats;
+                    }
+
+                }
+            }
+            else if(selectedSeat.length<seatsInput &&seatsInput!=0)
+            {
+                $(this).toggleClass('selected-seat');
+                if ($('.selected-seat').length == seatsInput) {
+                    $('#bookingDetails').removeClass('hide');
+                    var selectedSeats = $('.selected-seat').map(function(){
+                        return $(this).text();
+                    }).get().join(',');
+                    var price=$('.premium .selected-seat').length*@theatre.PremiumSeatPrice
+                        +$('.standard .selected-seat').length *@theatre.StandardSeatPrice;                    
+                    $('input[name="price"]')[0].value=price;
+                    $('input[name="seats"]')[0].value=selectedSeats;
+
+                }
+            }
+            
+        })
+        $('#numberOfSeats').on('change', function()
+        {
+            $('.selected-seat').removeClass('selected-seat');
+            $('#bookingDetails').addClass('hide');
+        })
+
+    }
+        )
+</script>

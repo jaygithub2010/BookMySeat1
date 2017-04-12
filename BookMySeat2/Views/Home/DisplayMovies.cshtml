@@ -1,0 +1,13 @@
+﻿@model IEnumerable<BookMySeat.Models.Movie>
+@{
+    ViewBag.Title = "DisplayMovies";
+}
+
+<div class="movie-list">
+    <ul>
+        @foreach (var movie in Model)
+        {
+            <li><h2>@Html.ActionLink(@movie.Name, "DisplayTheatres", new { movieID = movie.MovieID, movieName=movie.Name,date=DateTime.Now })</h2></li>
+        }
+    </ul>
+</div>

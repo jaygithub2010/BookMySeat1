@@ -1,0 +1,83 @@
+﻿@model IEnumerable<BookMySeat.Models.Theatre>
+@{
+    ViewBag.Title = "DisplayShows";
+}
+
+<ul class="dates">
+    <li class="selected-date"><h3>
+    <a href="javascript:void(0)" data-param="@DateTime.Now">TOD</a>
+</h3></li>
+    <li ><h3>
+    <a href="javascript:void(0)" data-param="@DateTime.Now.Date.AddDays(1)">TOM</a>
+</h3>
+</li>
+    <li><h3>
+    <a href="javascript:void(0)" data-param="@DateTime.Now.Date.AddDays(2)">@DateTime.Now.AddDays(2).ToString("MMM d")</a>
+</h3>
+</li>
+</ul>
+
+<div id="shows">
+    <h1>Movie:@Session["MovieName"]</h1>
+    @{
+        <ul class="theatres">
+            <li>
+            @foreach (var theatre in Model)
+            {
+                <h3><a href="javascript:void(0)" data-param="@theatre.TheatreID">@theatre.Name</a></h3>
+                    <div id="@theatre.TheatreID" class="hide">
+                        <ul></ul>                                                  
+                    </div>
+            }
+            </li>
+        </ul>
+    }
+</div>
+<script>
+    $(document).ready(function () {
+        $('.dates a').on('click',function(){
+            var dataParam=$(this).attr('data-param');
+            $('.selected-date').removeClass('selected-date');
+            $(this).parent().parent().addClass('selected-date');
+            $.ajax({
+                url:'../api/BookMySeat/GetTheatres',
+                type:'get',
+                data:{movieID:@ViewBag.MovieID, date:dataParam}
+            }).success(function(data){
+                $('.theatres li').html("");
+                $.each(data, function(index, value){
+                    var element='<h3><a href="javascript:void(0)" data-param='+value.TheatreID+'>'+value.Name+'</a></h3>'
+                    +'<div id='+value.TheatreID+' class="hide"><ul></ul></div>'
+                    $('.theatres li').append(element);
+                })
+            })
+        })
+
+
+        $('.theatres').on('click', 'h3>a',function()
+        {
+            var self=$(this).parent();
+            var tid=$(this).attr('data-param');
+            var dateParam= $($('.selected-date')[0]).find('a').attr('data-param');
+            $.ajax({
+                url: "../api/BookMySeat/GetShowTimes",
+                type: 'get',
+                data:{theatreID:tid,date:dateParam, movieID:@ViewBag.MovieID}
+            }).success(function(data)
+            {  
+                var showTimeElement=self.next().children();
+                showTimeElement.html("");
+                $.each(data, function(key, value){
+                    var formattedTime=new Date(new Date(Date.parse(value)).getTime()-330*60000).toLocaleTimeString('en-US');
+                    var time=$(document.createElement('a')).html(formattedTime);
+                    time.attr('href','DisplaySeats?showID='+key+'&showTime='+value);
+                    showTimeElement.append(time.wrap('<li></li>').parent());
+                })
+                $('#'+tid).removeClass('hide');
+            }).error(function()
+            {
+
+            })                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  
+        })
+    })
+</script>

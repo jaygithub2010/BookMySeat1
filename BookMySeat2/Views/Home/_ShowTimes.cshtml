@@ -1,0 +1,7 @@
+﻿@model Dictionary<int, DateTime>
+<ul>
+    @foreach (var showTime in Model)
+    {
+        <li><a>@Html.ActionLink(showTime.Value.ToString("hh:mm tt"), "DisplaySeats", new { showID = showTime.Key, showTime = showTime.Value }) </a></li>
+    }
+</ul>

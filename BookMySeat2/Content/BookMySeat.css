@@ -1,0 +1,86 @@
+﻿body{
+    font-family:monospace;
+}
+.navbar-header a{
+    padding-right:30px;
+    padding-left:30px;
+}
+.seat{
+    padding:2px;
+    border:1px solid green;
+    background:grey;
+}
+.available{
+    background:none;
+}
+.selected-seat{
+    background:green;
+}
+.hide{
+    display:none;
+}
+
+.premium ul li, .standard ul li{
+    display:inline-block;
+}
+
+input[readonly="readonly"]
+{
+    border:0;
+}
+#bookingDetails
+{
+    float:right;
+    padding-right:200px;
+}
+.movies-list{
+    list-style-type:none;
+}
+.movies-list li{
+    padding:20px;
+}
+.seat-layout{
+    border:1px solid green;
+    float:left;
+    padding:30px;
+    padding-right:80px;
+}
+.screen{
+    text-align:center;
+}
+.booking-details{
+    padding:100px;
+}
+#bookingDetails input[type="submit"]
+{
+    color: white;
+    margin-right: 33px;
+    font-size: 18px;
+    background: rgb(70,140,0);
+    border: none;
+    height: 40px;
+}
+.dates{
+    list-style-type:none;
+    padding:0;
+    background:green;
+}
+.dates li{
+    color:white;
+    margin:0;
+    padding-right:10px;
+    padding-left:10px;
+    display:inline-block;
+}
+.dates a{
+    color:white;
+}
+.selected-date{
+    background-color:#006400;
+}
+.theatres ul li{
+    list-style-type:none;
+}
+.theatres{
+    list-style-type:none;
+}
